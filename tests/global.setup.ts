@@ -1,7 +1,8 @@
 import { chromium } from '@playwright/test';
 import dotenv from 'dotenv';
+import { resolve } from 'path';
 
-dotenv.config();
+dotenv.config({ path: resolve(__dirname, '../.env') });
 
 async function globalSetup() {
     console.log('Starting global setup...');
