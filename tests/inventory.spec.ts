@@ -13,7 +13,7 @@ test.describe("cart functionality @cart", () => {
         }
     );
   test(
-    "add 1 item to cart @fast @cart @tcid12",
+    "add 1 item to cart @fast @cart @regression @tcid12",
     {
       annotation: {
         type: "positive",
@@ -33,54 +33,55 @@ test.describe("cart functionality @cart", () => {
   );
 
     test(
-        "add all items to cart @fast @cart @tcid13",
-        {
+      "add all items to cart @fast @cart @regression @tcid13",
+      {
         annotation: {
-            type: "positive",
-            description: "Add all items to cart.",
+          type: "positive",
+          description: "Add all items to cart.",
         },
-        },
-        async ({ inventoryPage }) => {
+      },
+      async ({ inventoryPage }) => {
         // Navigate to inventory page.
         await inventoryPage.goto();
-    
+
         // Add all items to cart.
         const productCount = await inventoryPage.getProductCount();
         for (let i = 0; i < productCount; i++) {
-            const productName = await inventoryPage.getProductTitles();
-            await inventoryPage.addProductToCart(productName[i]);
+          const productName = await inventoryPage.getProductTitles();
+          await inventoryPage.addProductToCart(productName[i]);
         }
         // Check the product count on the cart badge.
         const cartBadge = await inventoryPage.getShoppingCartBadgeCount();
         expect(cartBadge).toBe(productCount);
-
-        }
+      }
     );
 
     test(
-        'cart badge - add 1 item to cart and remove it indicated in badge @fast @cart @tcid14',
-        {
-            annotation: {
-                type: 'positive',
-                description: 'Adding an item to the cart should update the cart badge count. Removing it should decrease the count.',
-            }
+      "cart badge - add 1 item to cart and remove it indicated in badge @fast @cart @regression @tcid14",
+      {
+        annotation: {
+          type: "positive",
+          description:
+            "Adding an item to the cart should update the cart badge count. Removing it should decrease the count.",
         },
-        async ({ inventoryPage }) => {
-            // Navigate to inventory page.
-            await inventoryPage.goto();
+      },
+      async ({ inventoryPage }) => {
+        // Navigate to inventory page.
+        await inventoryPage.goto();
 
-            // Add an item to cart.
-            await inventoryPage.addProductToCart("Sauce Labs Onesie");
-            // Check the product count on the cart badge.
-            const cartBadge = await inventoryPage.getShoppingCartBadgeCount();
-            expect(cartBadge).toBe(1);
+        // Add an item to cart.
+        await inventoryPage.addProductToCart("Sauce Labs Onesie");
+        // Check the product count on the cart badge.
+        const cartBadge = await inventoryPage.getShoppingCartBadgeCount();
+        expect(cartBadge).toBe(1);
 
-            // Remove the item from the cart.
-            await inventoryPage.removeProductFromCart("Sauce Labs Onesie");
-            // Check the product count on the cart badge.
-            const cartBadgeAfterRemove = await inventoryPage.getShoppingCartBadgeCount();
-            expect(cartBadgeAfterRemove).toBe(0);
-        }
-    )
+        // Remove the item from the cart.
+        await inventoryPage.removeProductFromCart("Sauce Labs Onesie");
+        // Check the product count on the cart badge.
+        const cartBadgeAfterRemove =
+          await inventoryPage.getShoppingCartBadgeCount();
+        expect(cartBadgeAfterRemove).toBe(0);
+      }
+    );
 
 });

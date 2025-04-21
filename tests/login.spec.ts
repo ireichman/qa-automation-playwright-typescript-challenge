@@ -6,7 +6,7 @@ import { testUsers, generateRandomString } from "../utilities/helpers";
 test.describe("login functionality @login", () => {
   [testUsers.validUser, testUsers.problemUser].forEach((user) =>
     test(
-      `Successful login for ${user.name} @fast @login @tcid5`,
+      `Successful login for ${user.name} @fast @login @smoke @regression @tcid5`,
       {
         annotation: {
           type: "positive",
@@ -24,7 +24,7 @@ test.describe("login functionality @login", () => {
   );
 
   test(
-    "Unsuccessful login - invalid username and valid password @fast @login @tcid6",
+    "Unsuccessful login - invalid username and valid password @fast @login @smoke @regression @tcid6",
     {
       annotation: {
         type: "negative",
@@ -45,7 +45,7 @@ test.describe("login functionality @login", () => {
     }
   );
   test(
-    "Unsuccessful login - bad username and good password @fast @login @tcid7",
+    "Unsuccessful login - bad username and good password @fast @login @smoke @regression @tcid7",
     {
       annotation: {
         type: "negative",
@@ -73,7 +73,7 @@ test.describe("login functionality @login", () => {
   );
 
   test(
-    "Unsuccessful login - good username and invalid password @fast @login @tcid8",
+    "Unsuccessful login - good username and invalid password @fast @login @regression @tcid8",
     {
       annotation: {
         type: "negative",
@@ -92,7 +92,7 @@ test.describe("login functionality @login", () => {
   );
 
   test.fixme(
-    "Login timeout @slow, @logout @login @tcid9",
+    "Login timeout @slow, @logout @login @smoke @regression @tcid9",
     {
       annotation: {
         type: "positive",
@@ -106,13 +106,13 @@ test.describe("login functionality @login", () => {
         testUsers.validUser.password
       );
       // Wait for 5 minutes.
-      await page.waitForTimeout(5 * 60 * 1000);
+      await page.waitForTimeout(10 * 60 * 1000);
       // I am trying to find the actual timeout period and message. Will finish the test when the data is found.
     }
   );
 
   test(
-    "Logout after successful login @fast @logout @login @tcid10",
+    "Logout after successful login @fast @logout @login @smoke @regression @tcid10",
     {
       annotation: {
         type: "positive",
@@ -138,44 +138,47 @@ test.describe("login functionality @login", () => {
     }
   );
 
-  test('load login page with performance metrics @fast @tcid2 @performance', {
-    annotation: {
-      type: "performance",
-      description: "Load the login page and collect performance metrics."
+  test(
+    "load login page with performance metrics @fast @tcid2 @smoke @regression @performance",
+    {
+      annotation: {
+        type: "performance",
+        description: "Load the login page and collect performance metrics.",
+      },
+    },
+    async ({ loginPage, page }, testInfo) => {
+      // load the login page.
+      await loginPage.goto();
+
+      // Collect performance metrics using the browser's Performance API.
+      const metrics = await page.evaluate(() => {
+        const perfEntries = performance.getEntriesByType("navigation");
+        return perfEntries[0] as PerformanceNavigationTiming;
+      });
+      // Format metrics into a readable report.
+      const performanceReport = {
+        domContentLoaded:
+          metrics.domContentLoadedEventEnd - metrics.domContentLoadedEventStart,
+        // More metrics can be added here as needed.
+      };
+      // Convert the metrics object to a formatted string.
+      const formattedReport = JSON.stringify(performanceReport, null, 2);
+      // Attach the metrics to the test report.
+      await testInfo.attach("performance-metrics.json", {
+        body: formattedReport,
+        contentType: "application/json",
+      });
+
+      // Check that the page has loaded.
+      const loginPagetitle = await loginPage.loginLogo;
+      await expect(loginPagetitle).toHaveText("Swag Labs");
+      // Check that the login form is present.
+      const loginButton = await loginPage.loginButton;
+      await expect(loginButton).toBeVisible();
+      // Verify load time is within acceptable limits.
+      expect(performanceReport.domContentLoaded).toBeLessThan(3000); // This is an example threshold, IRL it will be based on benchmarks and feature specifications.
     }
-  },
-  async ({ loginPage, page }, testInfo) => {
-    // load the login page.
-    await loginPage.goto();
-
-    // Collect performance metrics using the browser's Performance API.
-    const metrics = await page.evaluate(() => {
-      const perfEntries = performance.getEntriesByType("navigation");
-      return perfEntries[0] as PerformanceNavigationTiming;
-    });
-    // Format metrics into a readable report.
-    const performanceReport = {
-      domContentLoaded:
-        metrics.domContentLoadedEventEnd - metrics.domContentLoadedEventStart,
-        // More metrics can be added here as needed. 
-    };
-    // Convert the metrics object to a formatted string.
-    const formattedReport = JSON.stringify(performanceReport, null, 2);
-    // Attach the metrics to the test report.
-    await testInfo.attach("performance-metrics.json", {
-      body: formattedReport,
-      contentType: "application/json",
-    });
-
-    // Check that the page has loaded.
-    const loginPagetitle = await loginPage.loginLogo;
-    await expect(loginPagetitle).toHaveText("Swag Labs");
-    // Check that the login form is present.
-    const loginButton = await loginPage.loginButton;
-    await expect(loginButton).toBeVisible();
-    // Verify load time is within acceptable limits.
-    expect(performanceReport.domContentLoaded).toBeLessThan(3000); // This is an example threshold, IRL it will be based on benchmarks and feature specifications.
-  });
+  );
 
 
 
