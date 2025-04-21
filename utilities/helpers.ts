@@ -5,6 +5,10 @@ tools for simplifying the code.
 export const testUsers = {
   validUser: { name: "standard_user", password: "secret_sauce" },
   invalidUser: { name: "invalid_user", password: "wrong_password" },
+  lockedOutUser: { name: "locked_out_user", password: "secret_sauce" },
+  problemUser: { name: "problem_user", password: "secret_sauce" },
+  performanceGlitchUser: { name: "performance_glitch_user", password: "secret_sauce" },
+  // Will add more users if time will allow for testing them. 
 };
 
 /**

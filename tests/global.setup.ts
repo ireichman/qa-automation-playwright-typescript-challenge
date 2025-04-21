@@ -16,6 +16,7 @@ async function globalSetup() {
         // OPTIONAL: This could be helpful for creating test users and/or other initial data to be referenced
         // locally during tests. The usefulness may be greatly reduced for this QA coding challenge, yet
         // it's here as a starter if it can help.
+
     } catch (error) {
         console.error('Error in global setup:', error);
         throw error;
