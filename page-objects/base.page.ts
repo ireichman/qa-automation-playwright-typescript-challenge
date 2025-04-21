@@ -22,7 +22,7 @@ export class BasePage {
     this.headerLogo = page.locator(".app_logo");
     this.burgerMenuButton = page.locator("#react-burger-menu-btn");
     this.shoppingCartLink = page.locator(".shopping_cart_link");
-    this.sidebarMenu = page.locator(".bm-menu");
+    this.sidebarMenu = page.locator(".bm-menu-wrap");
     this.sidebarInventoryLink = page.locator("#inventory_sidebar_link");
     this.sidebarAboutLink = page.locator("#about_sidebar_link");
     this.sidebarLogoutLink = page.locator("#logout_sidebar_link");
@@ -31,10 +31,22 @@ export class BasePage {
   }
 
   /**
+   * Check if the sidebar menu is open. isVisible method was not reliable.
+   * Instead I used getAttribute to check the style for transform attribute.
+   * @returns A boolean indicating if the menu is open.
+   */
+  async isMenuOpen(): Promise<boolean> {
+    const style = await this.sidebarMenu.getAttribute('style');
+    const isVisible = !style?.includes('transform');
+    return isVisible;
+  }
+
+
+  /**
    * Open the sidebar menu.
    */
   async openMenu(): Promise<void> {
-    const isVisible = await this.sidebarMenu.isVisible();
+    const isVisible = await this.isMenuOpen();
     if (!isVisible) {
       await this.burgerMenuButton.click();
       await this.sidebarMenu.waitFor({ state: "visible" });
@@ -45,9 +57,7 @@ export class BasePage {
    * Close sidebar menu.
    */
   async closeMenu(): Promise<void> {
-    const isVisible = await this.sidebarMenu
-      .isVisible(/* Checking if the option actually does something.{ timeout: 1000 }*/)
-      .catch(() => false);
+    const isVisible = await this.isMenuOpen();
     if (isVisible) {
       await this.sidebarCloseButton.click();
       await this.sidebarMenu.waitFor({ state: "hidden" });
@@ -60,7 +70,7 @@ export class BasePage {
   async logout(): Promise<void> {
     await this.openMenu();
     await this.page.waitForTimeout(1000);
-    await this.sidebarLogoutLink.waitFor({ state: "visible" });
+    // await this.sidebarLogoutLink.waitFor({ state: "visible" });
     await this.sidebarLogoutLink.click({ timeout: 2000 });
     // Should redirect to login page
     await this.page.waitForURL(UI_BASE_URL);
