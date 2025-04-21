@@ -1,36 +1,33 @@
 import { test, expect, UI_BASE_URL } from "../fixtures/test.fixtures";
 import { testUsers, generateRandomString } from "../utilities/helpers";
 
-
 // Testing login functionality.
 test.describe("login functionality @login", () => {
-
-  test(
-    "Successful login @fast @login @tcid5",
-    {
-      annotation: {
-        type: "positive",
-        description:
-          "Login with valid credentials should redirect to the inventory page.",
+  [testUsers.validUser, testUsers.problemUser].forEach((user) =>
+    test(
+      `Successful login for ${user.name} @fast @login @tcid5`,
+      {
+        annotation: {
+          type: "positive",
+          description:
+            "Login with valid credentials should redirect to the inventory page.",
+        },
       },
-    },
-    async ({ loginPage, inventoryPage, page }) => {
-      await loginPage.login(
-        testUsers.validUser.name,
-        testUsers.validUser.password
-      );
-      // Verify that the inventory page is displayed after login.
-      await expect(inventoryPage.inventoryList).toBeVisible();
-      await expect(page).toHaveURL(`${UI_BASE_URL}inventory.html`);
-    }
+      async ({ loginPage, inventoryPage, page }) => {
+        await loginPage.login(user.name, user.password);
+        // Verify that the inventory page is displayed after login.
+        await expect(inventoryPage.inventoryList).toBeVisible();
+        await expect(page).toHaveURL(`${UI_BASE_URL}inventory.html`);
+      }
+    )
   );
 
   test(
-    "Unsuccessful login - bad username and password @fast @login @tcid6",
+    "Unsuccessful login - invalid username and valid password @fast @login @tcid6",
     {
       annotation: {
         type: "negative",
-        description: "Log in with bas username and bad password.",
+        description: "Log in with invalid username and bad password.",
       },
     },
     async ({ loginPage, page }) => {
@@ -63,7 +60,7 @@ test.describe("login functionality @login", () => {
 
       await expect(loginPage.errorMessage).toBeVisible();
       await expect(loginPage.errorMessage).toHaveText(
-        "Epic sadface: Username and password do not match any user in this service" 
+        "Epic sadface: Username and password do not match any user in this service"
       );
 
       // Verify that error message is displayed.
@@ -137,7 +134,8 @@ test.describe("login functionality @login", () => {
       // Verify that the login page is displayed.
       await expect(page).toHaveURL(UI_BASE_URL);
       await expect(loginPage.loginLogo).toBeVisible();
-
     }
   );
+
+  
 });
