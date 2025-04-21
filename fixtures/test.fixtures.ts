@@ -14,6 +14,7 @@ type TestFixtures = {
 // Export the extended test
 export const test = base.extend<TestFixtures>({
   loginPage: async ({ page }, use) => {
+    console.log("Creating a new LoginPage object");
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await use(loginPage);
@@ -36,7 +37,7 @@ export const test = base.extend<TestFixtures>({
   },
 });
 
-// Also export expect for convenience
+// Also exporting expect for convenience
 export { expect } from "@playwright/test";
 
 

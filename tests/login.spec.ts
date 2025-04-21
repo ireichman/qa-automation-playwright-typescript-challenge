@@ -1,21 +1,9 @@
-import { test, expect } from "@playwright/test";
-import { LoginPage } from "../page-objects/login.page";
-import { InventoryPage } from "../page-objects/inventory.page";
+import { test, expect, UI_BASE_URL } from "../fixtures/test.fixtures";
 import { testUsers, generateRandomString } from "../utilities/helpers";
-import { log } from "console";
-import { UI_BASE_URL } from "../fixtures/test.fixtures";
+
 
 // Testing login functionality.
 test.describe("login functionality @login", () => {
-  // Declare  a login page object.
-  let loginPage;
-
-  test.beforeEach(async ({ page }) => {
-    //Initialize a new LoginPage object for each test.
-    loginPage = new LoginPage(page);
-    // Navigate to the login page.
-    await loginPage.goto();
-  });
 
   test(
     "Successful login @fast @login @tcid5",
@@ -26,13 +14,12 @@ test.describe("login functionality @login", () => {
           "Login with valid credentials should redirect to the inventory page.",
       },
     },
-    async ({ page }) => {
+    async ({ loginPage, inventoryPage, page }) => {
       await loginPage.login(
         testUsers.validUser.name,
         testUsers.validUser.password
       );
       // Verify that the inventory page is displayed after login.
-      const inventoryPage = new InventoryPage(page);
       await expect(inventoryPage.inventoryList).toBeVisible();
       await expect(page).toHaveURL(`${UI_BASE_URL}inventory.html`);
     }
@@ -46,7 +33,7 @@ test.describe("login functionality @login", () => {
         description: "Log in with bas username and bad password.",
       },
     },
-    async ({ page }) => {
+    async ({ loginPage, page }) => {
       // Attempt to login with invalid credentials.
       await loginPage.login(
         testUsers.invalidUser.name,
@@ -67,16 +54,16 @@ test.describe("login functionality @login", () => {
         description: "Log in with bad username and good password.",
       },
     },
-    async ({ page }) => {
+    async ({ loginPage, page }) => {
       // Attempt to login with invalid credentials.
       await loginPage.login(
         generateRandomString(8),
         testUsers.validUser.password
       );
 
-      await loginPage.login(
-        generateRandomString(8),
-        testUsers.validUser.password
+      await expect(loginPage.errorMessage).toBeVisible();
+      await expect(loginPage.errorMessage).toHaveText(
+        "Epic sadface: Username and password do not match any user in this service" 
       );
 
       // Verify that error message is displayed.
@@ -95,7 +82,7 @@ test.describe("login functionality @login", () => {
         description: "Log in with good username and bad password.",
       },
     },
-    async ({ page }) => {
+    async ({ loginPage, page }) => {
       // Attempt to login with invalid password.
       await loginPage.login(testUsers.validUser.name, generateRandomString(10));
       // Verify that error message is displayed.
@@ -114,7 +101,7 @@ test.describe("login functionality @login", () => {
         description: "Login",
       },
     },
-    async ({ page }) => {
+    async ({ loginPage, page }) => {
       // Log in with valid credentials.
       await loginPage.login(
         testUsers.validUser.name,
@@ -134,7 +121,7 @@ test.describe("login functionality @login", () => {
         description: "Log in with valid credentials and then log out.",
       },
     },
-    async ({ page }) => {
+    async ({ loginPage, inventoryPage, page }) => {
       // Log in with valid credentials.
       await loginPage.login(
         testUsers.validUser.name,
@@ -142,7 +129,6 @@ test.describe("login functionality @login", () => {
       );
 
       // Verify that the inventory page is displayed after login.
-      const inventoryPage = new InventoryPage(page);
       await expect(page).toHaveURL(`${UI_BASE_URL}inventory.html`);
 
       // Log out.
