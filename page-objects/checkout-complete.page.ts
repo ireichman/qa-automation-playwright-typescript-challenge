@@ -45,6 +45,6 @@ export class CheckoutCompletePage extends BasePage {
    */
   async backToHome(): Promise<void> {
     await this.backHomeButton.click();
-    await this.page.waitForURL(/.*\/inventory.html/);
+    await this.page.waitForURL(`${UI_BASE_URL}inventory.html`);
   }
 }

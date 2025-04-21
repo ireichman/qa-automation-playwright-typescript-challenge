@@ -1,4 +1,3 @@
-import { fa } from "@faker-js/faker";
 import { test, expect, UI_BASE_URL } from "../fixtures/test.fixtures";
 import { testUsers, generateRandomString } from "../utilities/helpers";
 

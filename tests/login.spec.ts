@@ -4,6 +4,7 @@ import { testUsers, generateRandomString } from "../utilities/helpers";
 
 // Testing login functionality.
 test.describe("login functionality @login", () => {
+  // Testing successful login with 2 users by iterating through the testUsers array.
   [testUsers.validUser, testUsers.problemUser].forEach((user) =>
     test(
       `Successful login for ${user.name} @fast @login @smoke @regression @tcid5`,
@@ -96,7 +97,7 @@ test.describe("login functionality @login", () => {
     {
       annotation: {
         type: "positive",
-        description: "Login",
+        description: "Test that the session times out after 10 minutes of inactivity.",
       },
     },
     async ({ loginPage, page }) => {
