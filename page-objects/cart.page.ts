@@ -74,6 +74,5 @@ export class CartPage extends BasePage {
     const nextPage = await this.page.waitForURL(
       `${UI_BASE_URL}checkout-step-one.html`
     );
-    console.log(nextPage);
   }
 }
