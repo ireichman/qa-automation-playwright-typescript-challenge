@@ -9,6 +9,7 @@ export class CartPage extends BasePage {
   readonly continueShoppingButton: Locator;
   readonly checkoutButton: Locator;
   readonly cartItemNames: Locator;
+  readonly cartList: Locator;
 
   constructor(page: Page) {
     // Call the constructor of the base page.
@@ -18,6 +19,7 @@ export class CartPage extends BasePage {
     this.cartItemNames = page.locator(".inventory_item_name");
     this.continueShoppingButton = page.locator("#continue-shopping");
     this.checkoutButton = page.locator("#checkout");
+    this.cartList = page.locator(".cart_list");
   }
 
   /**
