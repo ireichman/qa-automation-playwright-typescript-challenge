@@ -1,3 +1,4 @@
+import { log } from "console";
 import { test, expect, UI_BASE_URL } from "../fixtures/test.fixtures";
 import { testUsers, generateRandomString } from "../utilities/helpers";
 
@@ -137,5 +138,90 @@ test.describe("login functionality @login", () => {
     }
   );
 
-  
+  test('load login page with performance metrics @fast @tcid2 @performance', {
+    annotation: {
+      type: "performance",
+      description: "Load the login page and collect performance metrics."
+    }
+  },
+  async ({ loginPage, page }, testInfo) => {
+    // load the login page.
+    await loginPage.goto();
+
+    // Collect performance metrics using the browser's Performance API.
+    const metrics = await page.evaluate(() => {
+      const perfEntries = performance.getEntriesByType("navigation");
+      return perfEntries[0] as PerformanceNavigationTiming;
+    });
+    // Format metrics into a readable report.
+    const performanceReport = {
+      domContentLoaded:
+        metrics.domContentLoadedEventEnd - metrics.domContentLoadedEventStart,
+        // More metrics can be added here as needed. 
+    };
+    // Convert the metrics object to a formatted string.
+    const formattedReport = JSON.stringify(performanceReport, null, 2);
+    // Attach the metrics to the test report.
+    await testInfo.attach("performance-metrics.json", {
+      body: formattedReport,
+      contentType: "application/json",
+    });
+
+    // Check that the page has loaded.
+    const loginPagetitle = await loginPage.loginLogo;
+    await expect(loginPagetitle).toHaveText("Swag Labs");
+    // Check that the login form is present.
+    const loginButton = await loginPage.loginButton;
+    await expect(loginButton).toBeVisible();
+    // Verify load time is within acceptable limits.
+    expect(performanceReport.domContentLoaded).toBeLessThan(3000); // This is an example threshold, IRL it will be based on benchmarks and feature specifications.
+  });
+
+
+
+
+
+
+
+    test("load login page with performance metrics", async ({
+      page,
+    }, testInfo) => {
+      // Load the login page
+      await page.goto(UI_BASE_URL);
+
+      // Collect performance metrics using the browser's Performance API
+      const metrics = await page.evaluate(() => {
+        const perfEntries = performance.getEntriesByType("navigation");
+        return perfEntries[0] as PerformanceNavigationTiming;
+      });
+
+      // Format the metrics into a readable report
+      const performanceReport = {
+        domContentLoaded:
+          metrics.domContentLoadedEventEnd - metrics.domContentLoadedEventStart,
+        // loadEvent: metrics.loadEventEnd - metrics.loadEventStart,
+        // ttfb: metrics.responseStart - metrics.requestStart,
+        // domInteractive:
+        //   metrics.domInteractive - metrics.domContentLoadedEventStart,
+        // domComplete: metrics.domComplete - metrics.domContentLoadedEventStart,
+      };
+
+      // Convert the metrics object to a formatted string
+      const formattedReport = JSON.stringify(performanceReport, null, 2);
+
+      // Attach the metrics to the test report
+      await testInfo.attach("performance-metrics.json", {
+        body: formattedReport,
+        contentType: "application/json",
+      });
+
+      // Check that the page has loaded
+      const title = page.locator(".login_logo");
+      await expect(title).toHaveText("Swag Labs");
+      // Check that the login form is present
+      const loginForm = page.locator("form");
+      await expect(loginForm).toBeVisible();
+      // Verify load time is within acceptable limits.
+      expect(performanceReport.domContentLoaded).toBeLessThan(3000); // This is an example threshold, IRL it will be based on benchmarks and feature specifications.
+    });
 });
