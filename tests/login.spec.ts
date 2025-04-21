@@ -97,7 +97,8 @@ test.describe("login functionality @login", () => {
     {
       annotation: {
         type: "positive",
-        description: "Test that the session times out after 10 minutes of inactivity.",
+        description:
+          "Test that the session times out after 10 minutes of inactivity.",
       },
     },
     async ({ loginPage, page }) => {
@@ -109,6 +110,8 @@ test.describe("login functionality @login", () => {
       // Wait for 10 minutes.
       await page.waitForTimeout(10 * 60 * 1000);
       // Due to the waiting time (10m) involved in building this test, it will not be completed this sprint.
+
+      // Verify that the login page is displayed. Might need to referesh the page.
     }
   );
 
@@ -181,51 +184,85 @@ test.describe("login functionality @login", () => {
     }
   );
 
+  test("load login page with performance metrics", async ({
+    page,
+  }, testInfo) => {
+    // Load the login page
+    await page.goto(UI_BASE_URL);
 
-
-
-
-
-
-    test("load login page with performance metrics", async ({
-      page,
-    }, testInfo) => {
-      // Load the login page
-      await page.goto(UI_BASE_URL);
-
-      // Collect performance metrics using the browser's Performance API
-      const metrics = await page.evaluate(() => {
-        const perfEntries = performance.getEntriesByType("navigation");
-        return perfEntries[0] as PerformanceNavigationTiming;
-      });
-
-      // Format the metrics into a readable report
-      const performanceReport = {
-        domContentLoaded:
-          metrics.domContentLoadedEventEnd - metrics.domContentLoadedEventStart,
-        // loadEvent: metrics.loadEventEnd - metrics.loadEventStart,
-        // ttfb: metrics.responseStart - metrics.requestStart,
-        // domInteractive:
-        //   metrics.domInteractive - metrics.domContentLoadedEventStart,
-        // domComplete: metrics.domComplete - metrics.domContentLoadedEventStart,
-      };
-
-      // Convert the metrics object to a formatted string
-      const formattedReport = JSON.stringify(performanceReport, null, 2);
-
-      // Attach the metrics to the test report
-      await testInfo.attach("performance-metrics.json", {
-        body: formattedReport,
-        contentType: "application/json",
-      });
-
-      // Check that the page has loaded
-      const title = page.locator(".login_logo");
-      await expect(title).toHaveText("Swag Labs");
-      // Check that the login form is present
-      const loginForm = page.locator("form");
-      await expect(loginForm).toBeVisible();
-      // Verify load time is within acceptable limits.
-      expect(performanceReport.domContentLoaded).toBeLessThan(3000); // This is an example threshold, IRL it will be based on benchmarks and feature specifications.
+    // Collect performance metrics using the browser's Performance API
+    const metrics = await page.evaluate(() => {
+      const perfEntries = performance.getEntriesByType("navigation");
+      return perfEntries[0] as PerformanceNavigationTiming;
     });
+
+    // Format the metrics into a readable report
+    const performanceReport = {
+      domContentLoaded:
+        metrics.domContentLoadedEventEnd - metrics.domContentLoadedEventStart,
+      // loadEvent: metrics.loadEventEnd - metrics.loadEventStart,
+      // ttfb: metrics.responseStart - metrics.requestStart,
+      // domInteractive:
+      //   metrics.domInteractive - metrics.domContentLoadedEventStart,
+      // domComplete: metrics.domComplete - metrics.domContentLoadedEventStart,
+    };
+
+    // Convert the metrics object to a formatted string
+    const formattedReport = JSON.stringify(performanceReport, null, 2);
+
+    // Attach the metrics to the test report
+    await testInfo.attach("performance-metrics.json", {
+      body: formattedReport,
+      contentType: "application/json",
+    });
+
+    // Check that the page has loaded
+    const title = page.locator(".login_logo");
+    await expect(title).toHaveText("Swag Labs");
+    // Check that the login form is present
+    const loginForm = page.locator("form");
+    await expect(loginForm).toBeVisible();
+    // Verify load time is within acceptable limits.
+    expect(performanceReport.domContentLoaded).toBeLessThan(3000); // This is an example threshold, IRL it will be based on benchmarks and feature specifications.
+  });
+
+  test(
+    "Security - check for HTTPS @fast @security @login @smoke @regression @tcid21",
+    {
+      annotation: {
+        type: "security",
+        description:
+          `Check that the login page is served over HTTPS and not HTTP. This test Mostly demonstrates security testing,
+          due to the test server not having strict security headers.`,
+      },
+    },
+    async ({ page }) => {
+      // Load the login page
+      const browserResponse = await page.goto(UI_BASE_URL);
+
+      // Check if the page is served over HTTPS. TODO: Check for redirections.
+      const finalUrl = page.url();
+
+      // Check if the URL starts with "https://"
+      const isHttps = finalUrl.startsWith("https://");
+      expect(isHttps).toBeTruthy();
+
+      // Check that the response the browser receives is successful (status code < 400).
+      expect(browserResponse?.status()).toBeLessThan(400);
+
+      // Check security headers.
+      const securityHeaders = browserResponse?.headers();
+      if (securityHeaders) {
+      // Check for strict transport security header. It's not implemented in the test server though.
+
+        if (securityHeaders["strict-transport-security"]) {
+          expect(securityHeaders["strict-transport-security"]).toBeDefined();
+        }
+
+        if (securityHeaders["content-security-policy"]) {
+          expect(securityHeaders["content-security-policy"]).toBeDefined();
+        }
+      }
+
+});
 });
