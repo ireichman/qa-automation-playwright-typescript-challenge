@@ -133,8 +133,14 @@ export class InventoryPage extends BasePage {
      */
 
     async getShoppingCartBadgeCount(): Promise<number> {
-        const badgeText = await this.page.locator(".shopping_cart_badge").textContent();
-        return parseInt(badgeText || "0", 10);
+        // Check if the cart badge is visible
+        const cartBadge = this.page.locator(".shopping_cart_badge");
+        if (!(await cartBadge.isVisible())) {
+            return 0; // Return 0 if the badge is not visible
+        } else {
+            const badgeText = await this.page.locator(".shopping_cart_badge").textContent();
+            return parseInt(badgeText || "0", 10);
+        }
     }
-
+    
 };
