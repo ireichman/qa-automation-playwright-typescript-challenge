@@ -8,6 +8,7 @@ export class InventoryPage extends BasePage {
   readonly productSortContainer: Locator;
   readonly inventoryList: Locator;
   readonly inventoryItems: Locator;
+  readonly shoppingCartBadgeCount: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -126,4 +127,14 @@ export class InventoryPage extends BasePage {
       })
       .click();
   }
+    /**
+     * Get the shopping cart badge count.
+     * @returns Number of items in the shopping cart.
+     */
+
+    async getShoppingCartBadgeCount(): Promise<number> {
+        const badgeText = await this.page.locator(".shopping_cart_badge").textContent();
+        return parseInt(badgeText || "0", 10);
+    }
+
 };

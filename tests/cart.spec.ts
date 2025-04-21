@@ -1,4 +1,4 @@
-import { test, expect, UI_BASE_URL } from "../fixtures/test.fixture";
+import { test, expect, UI_BASE_URL } from "../fixtures/test.fixtures";
 import { InventoryPage } from "../page-objects/inventory.page";
 import { testUsers, generateRandomString } from "../utilities/helpers";
 
