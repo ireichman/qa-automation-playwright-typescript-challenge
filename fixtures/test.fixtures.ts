@@ -1,3 +1,7 @@
+/* 
+Extending Playwright's test fixture to include custom page objects.
+*/
+
 import { test as base, Page, expect } from "@playwright/test";
 import { LoginPage } from "../page-objects/login.page";
 import { InventoryPage } from "../page-objects/inventory.page";
@@ -37,10 +41,13 @@ export const test = base.extend<TestFixtures>({
   },
 });
 
-// Also exporting expect for convenience
+// Also exporting expect so it's not necessary to have a separate import.
 export { expect } from "@playwright/test";
 
-
+/*
+exporting UI_BASE_URL from .env file.
+Having it here allows us to use it in all page objects.
+*/
 // Importing the URL var from .env.
 export const UI_BASE_URL: string = process.env.UI_BASE_URL?? '';
 
