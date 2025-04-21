@@ -1,15 +1,6 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
-
-// Importing the URL var from .env.
-const UI_BASE_URL: string = process.env.UI_BASE_URL ?? "";
-
-// If the UI_BASE_URL is empty, throw an error.
-if (!UI_BASE_URL) {
-  throw new Error(
-    `Error retrieving UI_BASE_URL from .env. Received: ${UI_BASE_URL}`
-  );
-}
+import { UI_BASE_URL } from "../fixtures/test.fixtures";
 
 
 export class InventoryPage extends BasePage {

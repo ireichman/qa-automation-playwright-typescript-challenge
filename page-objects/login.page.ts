@@ -1,15 +1,6 @@
 
 import { Page, expect } from "@playwright/test";
-import { BasePage } from "./base.page";
-
-
-// Importing the URL var from .env.
-const UI_BASE_URL: string = process.env.UI_BASE_URL?? '';
-
-// If the UI_BASE_URL is empty, throw an error.
-if (!UI_BASE_URL) {
-    throw new Error(`Error retrieving UI_BASE_URL from .env. Received: ${UI_BASE_URL}`);
-};
+import { UI_BASE_URL } from "../fixtures/test.fixtures";
 
 
 export class LoginPage {
@@ -25,7 +16,7 @@ export class LoginPage {
   constructor(page: Page) {
     this.page = page;
 
-    // Initialize elements after page is set.
+    // Initialize elements.
     this.usernameInput = page.locator("#user-name");
     this.passwordInput = page.locator("#password");
     this.loginButton = page.locator("#login-button");
