@@ -105,9 +105,9 @@ test.describe("login functionality @login", () => {
         testUsers.validUser.name,
         testUsers.validUser.password
       );
-      // Wait for 5 minutes.
+      // Wait for 10 minutes.
       await page.waitForTimeout(10 * 60 * 1000);
-      // I am trying to find the actual timeout period and message. Will finish the test when the data is found.
+      // Due to the waiting time (10m) involved in building this test, it will not be completed this sprint.
     }
   );
 

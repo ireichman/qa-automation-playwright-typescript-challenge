@@ -1,5 +1,4 @@
 import { test, expect, UI_BASE_URL } from "../fixtures/test.fixtures";
-import { InventoryPage } from "../page-objects/inventory.page";
 import { testUsers, generateRandomString } from "../utilities/helpers";
 
 // Testing cart functionality.
@@ -74,4 +73,6 @@ test.describe("cart functionality @cart", () => {
       expect(await cartPage.getItemCount()).toBe(0);
     }
   );
+
+
 });

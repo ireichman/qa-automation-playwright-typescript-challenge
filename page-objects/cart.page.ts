@@ -2,7 +2,6 @@ import { Page, Locator } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { UI_BASE_URL } from "../fixtures/test.fixtures";
 
-
 export class CartPage extends BasePage {
   // Cart page elements.
   readonly cartItems: Locator;
@@ -72,6 +71,9 @@ export class CartPage extends BasePage {
    */
   async checkout(): Promise<void> {
     await this.checkoutButton.click();
-    await this.page.waitForURL(`${UI_BASE_URL}checkout-step-one.html`);
+    const nextPage = await this.page.waitForURL(
+      `${UI_BASE_URL}checkout-step-one.html`
+    );
+    console.log(nextPage);
   }
 }

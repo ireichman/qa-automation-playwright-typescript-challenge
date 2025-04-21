@@ -47,6 +47,7 @@ export class CheckoutStepOnePage extends BasePage {
      */
     async continue(): Promise<void> {
         await this.continueButton.click();
+        await this.page.waitForURL(`${UI_BASE_URL}checkout-step-two.html`);
     }
 
     /**
