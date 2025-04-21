@@ -45,8 +45,8 @@ export default defineConfig({
     // This runs once after all tests
     globalTeardown: './tests/global.teardown.ts',
     // Usually 30 seconds is sufficient.
-    timeout: 30000,
-    globalTimeout: 30000,
+    timeout: 5000, //30000,
+    // globalTimeout: 5000, //30000,
 
     /* Configure projects for major browsers */
     projects: [

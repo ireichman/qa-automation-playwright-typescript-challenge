@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { UI_BASE_URL } from "../fixtures/test.fixtures";
 
 export class BasePage {
   readonly page: Page;
@@ -21,7 +22,7 @@ export class BasePage {
     this.headerLogo = page.locator(".app_logo");
     this.burgerMenuButton = page.locator("#react-burger-menu-btn");
     this.shoppingCartLink = page.locator(".shopping_cart_link");
-    this.sidebarMenu = page.locator(".bm-menu-wrap");
+    this.sidebarMenu = page.locator(".bm-menu");
     this.sidebarInventoryLink = page.locator("#inventory_sidebar_link");
     this.sidebarAboutLink = page.locator("#about_sidebar_link");
     this.sidebarLogoutLink = page.locator("#logout_sidebar_link");
@@ -33,7 +34,8 @@ export class BasePage {
    * Open the sidebar menu.
    */
   async openMenu(): Promise<void> {
-    if (!(await this.sidebarMenu.isVisible())) {
+    const isVisible = await this.sidebarMenu.isVisible();
+    if (!isVisible) {
       await this.burgerMenuButton.click();
       await this.sidebarMenu.waitFor({ state: "visible" });
     }
@@ -43,9 +45,10 @@ export class BasePage {
    * Close sidebar menu.
    */
   async closeMenu(): Promise<void> {
-    if (
-      await this.sidebarMenu.isVisible({ timeout: 1000 }).catch(() => false)
-    ) {
+    const isVisible = await this.sidebarMenu
+      .isVisible(/* Checking if the option actually does something.{ timeout: 1000 }*/)
+      .catch(() => false);
+    if (isVisible) {
       await this.sidebarCloseButton.click();
       await this.sidebarMenu.waitFor({ state: "hidden" });
     }
@@ -56,13 +59,15 @@ export class BasePage {
    */
   async logout(): Promise<void> {
     await this.openMenu();
-    await this.sidebarLogoutLink.click();
+    await this.page.waitForTimeout(1000);
+    await this.sidebarLogoutLink.waitFor({ state: "visible" });
+    await this.sidebarLogoutLink.click({ timeout: 2000 });
     // Should redirect to login page
-    await this.page.waitForURL(/.*\/.*login.*/);
+    await this.page.waitForURL(UI_BASE_URL);
   }
 
   /**
-   * Reset the app state
+   * Reset the app state.
    */
   async resetAppState(): Promise<void> {
     await this.openMenu();
@@ -71,11 +76,11 @@ export class BasePage {
   }
 
   /**
-   * Go to the shopping cart
+   * Go to the shopping cart.
    */
   async goToCart(): Promise<void> {
     await this.shoppingCartLink.click();
-    await this.page.waitForURL(/.*\/cart.html/);
+    await this.page.waitForURL(`${UI_BASE_URL}cart.html`);
   }
 
   /**
