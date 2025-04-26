@@ -17,10 +17,12 @@ export class BasePage {
 
   constructor(page: Page) {
     this.page = page;
+    
 
     // Initialize common elements.
     this.headerLogo = page.locator(".app_logo");
-    this.burgerMenuButton = page.locator("#react-burger-menu-btn");
+    // this.burgerMenuButton = page.locator("#react-burger-menu-btn");
+    this.burgerMenuButton = page.getByRole("button", { name: "Open Menu"});
     this.shoppingCartLink = page.locator(".shopping_cart_link");
     this.sidebarMenu = page.locator(".bm-menu-wrap");
     this.sidebarInventoryLink = page.locator("#inventory_sidebar_link");
