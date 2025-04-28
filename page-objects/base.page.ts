@@ -50,7 +50,7 @@ export class BasePage {
    */
   async logout(): Promise<void> {
     await this.openMenu();
-    await this.sidebarLogoutLink.click({ timeout: 2000 });
+    await this.sidebarLogoutLink.click();
     // Should redirect to login page
     await this.page.waitForURL(UI_BASE_URL);
   }
