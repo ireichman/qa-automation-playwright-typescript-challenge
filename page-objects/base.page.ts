@@ -1,5 +1,6 @@
 import { Page, Locator } from "@playwright/test";
 import { UI_BASE_URL } from "../fixtures/test.fixtures";
+import { el } from "@faker-js/faker";
 
 export class BasePage {
   readonly page: Page;
@@ -14,57 +15,34 @@ export class BasePage {
   readonly sidebarLogoutLink: Locator;
   readonly sidebarResetAppLink: Locator;
   readonly sidebarCloseButton: Locator;
+  readonly shoppingCartBadge: Locator;
 
   constructor(page: Page) {
     this.page = page;
     
 
     // Initialize common elements.
-    this.headerLogo = page.locator(".app_logo");
+    this.headerLogo = page.getByText("Swag Labs");
     this.burgerMenuButton = page.getByRole("button", { name: "Open Menu"});
-    this.shoppingCartLink = page.locator(".shopping_cart_link");
-    this.sidebarMenu = page.locator(".bm-menu-wrap");
-    this.sidebarInventoryLink = page.locator("#inventory_sidebar_link");
-    this.sidebarAboutLink = page.locator("#about_sidebar_link");
-    this.sidebarLogoutLink = page.locator("#logout_sidebar_link");
-    this.sidebarResetAppLink = page.locator("#reset_sidebar_link");
+    this.shoppingCartLink = page.getByRole("link", { name: "shopping-cart-link" });
+    this.sidebarMenu = page.locator(".bm-menu-wrap[aria-hidden='false']").getByRole("navigation");
+    this.sidebarInventoryLink = page.getByRole("link", { name: "All Items" });
+    this.sidebarAboutLink = page.getByRole("link", { name: "About" });
+    this.sidebarLogoutLink = page.getByRole("link", { name: "Logout" });
+    this.sidebarResetAppLink = page.getByRole("link", { name: "Reset App State" });
     this.sidebarCloseButton = page.getByRole("button", { name: "Close Menu" });
+    this.shoppingCartBadge = page.getByTestId("shopping-cart-badge");
   }
 
-  /**
-   * Check if the sidebar menu is open. isVisible method was not reliable.
-   * Instead I used getAttribute to check the style for transform attribute.
-   * @returns A boolean indicating if the menu is open.
-   */
-  async isMenuOpen(): Promise<boolean> {
-    const style = await this.sidebarMenu.getAttribute('style');
-    const isVisible = !style?.includes('transform');
-    return isVisible;
-  }
-
-
-  /**
-   * Open the sidebar menu.
-   */
   async openMenu(): Promise<void> {
     await this.burgerMenuButton.click();
-
-    // const isVisible = await this.isMenuOpen();
-    // if (!isVisible) {
-    //   await this.burgerMenuButton.click();
-    //   await this.sidebarMenu.waitFor({ state: "visible" });
-    // }
   }
 
   /**
    * Close sidebar menu.
    */
   async closeMenu(): Promise<void> {
-    const isVisible = await this.isMenuOpen();
-    if (isVisible) {
       await this.sidebarCloseButton.click();
-      await this.sidebarMenu.waitFor({ state: "hidden" });
-    }
   }
 
   /**
@@ -72,8 +50,6 @@ export class BasePage {
    */
   async logout(): Promise<void> {
     await this.openMenu();
-    await this.page.waitForTimeout(1000);
-    // await this.sidebarLogoutLink.waitFor({ state: "visible" });
     await this.sidebarLogoutLink.click({ timeout: 2000 });
     // Should redirect to login page
     await this.page.waitForURL(UI_BASE_URL);
@@ -101,11 +77,18 @@ export class BasePage {
    * @returns The number of items in cart, or 0 if empty.
    */
   async getCartItemCount(): Promise<number> {
-    const cartBadge = this.page.locator(".shopping_cart_badge");
-    const isVisible = await cartBadge.isVisible().catch(() => false);
-    if (!isVisible) return 0;
+    // Check if the shopping cart badge is visible. If .isVisible() fails, catch the error and return false.
+    const isVisible = await this.shoppingCartBadge
+      .isVisible()
+      .catch(() => false);
+    // If the badge is not visible, return 0.
+    if (!isVisible) {
+      return 0;
+    } else {
+      const countText = await this.shoppingCartBadge.textContent();
+      // If there is a text content, parse it as an integer. If not, return 0.
+      return countText ? parseInt(countText, 10) : 0;
+    }
 
-    const countText = await cartBadge.textContent();
-    return countText ? parseInt(countText, 10) : 0;
   }
 }
