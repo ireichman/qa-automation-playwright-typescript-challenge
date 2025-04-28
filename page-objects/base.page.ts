@@ -21,7 +21,6 @@ export class BasePage {
 
     // Initialize common elements.
     this.headerLogo = page.locator(".app_logo");
-    // this.burgerMenuButton = page.locator("#react-burger-menu-btn");
     this.burgerMenuButton = page.getByRole("button", { name: "Open Menu"});
     this.shoppingCartLink = page.locator(".shopping_cart_link");
     this.sidebarMenu = page.locator(".bm-menu-wrap");
@@ -29,7 +28,7 @@ export class BasePage {
     this.sidebarAboutLink = page.locator("#about_sidebar_link");
     this.sidebarLogoutLink = page.locator("#logout_sidebar_link");
     this.sidebarResetAppLink = page.locator("#reset_sidebar_link");
-    this.sidebarCloseButton = page.locator("#react-burger-cross-btn");
+    this.sidebarCloseButton = page.getByRole("button", { name: "Close Menu" });
   }
 
   /**
@@ -48,11 +47,13 @@ export class BasePage {
    * Open the sidebar menu.
    */
   async openMenu(): Promise<void> {
-    const isVisible = await this.isMenuOpen();
-    if (!isVisible) {
-      await this.burgerMenuButton.click();
-      await this.sidebarMenu.waitFor({ state: "visible" });
-    }
+    await this.burgerMenuButton.click();
+
+    // const isVisible = await this.isMenuOpen();
+    // if (!isVisible) {
+    //   await this.burgerMenuButton.click();
+    //   await this.sidebarMenu.waitFor({ state: "visible" });
+    // }
   }
 
   /**
