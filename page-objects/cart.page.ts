@@ -15,10 +15,17 @@ export class CartPage extends BasePage {
     super(page);
     // Initialize elements.
     this.cartItems = page.locator(".cart_item");
+    // this.cartItems = page.getByTestId("inventory-item");
     this.cartItemNames = page.locator(".inventory_item_name");
-    this.continueShoppingButton = page.locator("#continue-shopping");
-    this.checkoutButton = page.locator("#checkout");
+    this.continueShoppingButton = page.getByRole("button", {
+      name: "Continue Shopping",
+    });
+    // this.checkoutButton = page.locator("#checkout");
+    this.checkoutButton = page.getByRole("button", {
+      name: "Checkout",
+    });
     this.cartList = page.locator(".cart_list");
+    // this.cartList = page.getByTestId("cart_list");
   }
 
   /**
