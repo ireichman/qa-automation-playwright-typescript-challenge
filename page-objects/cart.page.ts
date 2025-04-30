@@ -14,18 +14,15 @@ export class CartPage extends BasePage {
     // Call the constructor of the base page.
     super(page);
     // Initialize elements.
-    this.cartItems = page.locator(".cart_item");
-    // this.cartItems = page.getByTestId("inventory-item");
-    this.cartItemNames = page.locator(".inventory_item_name");
+    this.cartItems = page.getByTestId("inventory-item");
+    this.cartItemNames = page.getByTestId("inventory-item-name");
     this.continueShoppingButton = page.getByRole("button", {
       name: "Continue Shopping",
     });
-    // this.checkoutButton = page.locator("#checkout");
     this.checkoutButton = page.getByRole("button", {
       name: "Checkout",
     });
-    this.cartList = page.locator(".cart_list");
-    // this.cartList = page.getByTestId("cart_list");
+    this.cartList = page.getByTestId("cart-list");
   }
 
   /**
