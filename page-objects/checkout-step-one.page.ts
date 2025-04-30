@@ -14,11 +14,11 @@ export class CheckoutStepOnePage extends BasePage {
     constructor(page: Page) {
         super(page);
         // Initialize elements.
-        this.firstNameInput = page.locator('#first-name');
-        this.lastNameInput = page.locator('#last-name');
-        this.zipCodeInput = page.locator('#postal-code');
-        this.continueButton = page.locator('#continue');
-        this.cancelButton = page.locator('#cancel');
+        this.firstNameInput = page.getByPlaceholder("First Name");
+        this.lastNameInput = page.getByPlaceholder("Last Name");
+        this.zipCodeInput = page.getByPlaceholder("Zip/Postal Code");
+        this.continueButton = page.getByRole("button", { name: "continue" });
+        this.cancelButton = page.getByRole("button", { name: "cancel" });
         this.errorMessage = page.getByTestId('[data-test="error"]');
         
     }
