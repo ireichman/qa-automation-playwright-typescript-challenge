@@ -12,9 +12,11 @@ export class CheckoutCompletePage extends BasePage {
   constructor(page: Page) {
     super(page);
     // Initialize elements.
-    this.completeHeader = page.locator(".complete-header");
-    this.completeText = page.locator(".complete-text");
-    this.backHomeButton = page.locator("#back-to-products");
+    this.completeHeader = page.getByRole("heading", { name: "Thank you for your order!"});
+    this.completeText = page.getByText(
+      "Your order has been dispatched and will arrive just as fast as the pony can get there!"
+    );
+    this.backHomeButton = page.getByRole("button", { name: "Back Home" });
   }
 
   /**
