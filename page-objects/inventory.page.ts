@@ -15,6 +15,7 @@ export class InventoryPage extends BasePage {
     this.productSortContainer = page.locator(".product_sort_container");
     this.inventoryList = page.locator(".inventory_list");
     this.inventoryItems = page.locator(".inventory_item");
+    this.shoppingCartBadgeCount = page.locator(".shopping_cart_badge");
   }
 
   /**
@@ -121,11 +122,7 @@ export class InventoryPage extends BasePage {
    * @param productName Name of the product to open.
    */
   async openProductDetails(productName: string): Promise<void> {
-    await this.page
-      .locator(".inventory_item_name", {
-        hasText: productName,
-      })
-      .click();
+      await this.page.getByRole("link", { name: productName }).click();
   }
     /**
      * Get the shopping cart badge count.
@@ -134,11 +131,11 @@ export class InventoryPage extends BasePage {
 
     async getShoppingCartBadgeCount(): Promise<number> {
         // Check if the cart badge is visible
-        const cartBadge = this.page.locator(".shopping_cart_badge");
-        if (!(await cartBadge.isVisible())) {
+        // const cartBadge = this.page.locator(".shopping_cart_badge");
+        if (!(await this.shoppingCartBadge.isVisible())) {
             return 0; // Return 0 if the badge is not visible
         } else {
-            const badgeText = await this.page.locator(".shopping_cart_badge").textContent();
+            const badgeText = await this.shoppingCartBadge.textContent();
             return parseInt(badgeText || "0", 10);
         }
     }
