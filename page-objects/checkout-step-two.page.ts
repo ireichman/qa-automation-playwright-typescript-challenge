@@ -16,7 +16,6 @@ export class CheckoutStepTwoPage extends BasePage {
   constructor(page: Page) {
     super(page);
     // Initialize elements.
-    // this.cartItems = page.locator(".cart_item");
     this.cartItems = page.getByTestId("inventory-item");
     this.summarySubtotal = page.getByText("Item total: $");
     this.summaryTax = page.getByText("Tax: $");
