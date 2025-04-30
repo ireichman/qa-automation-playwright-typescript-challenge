@@ -16,12 +16,13 @@ export class CheckoutStepTwoPage extends BasePage {
   constructor(page: Page) {
     super(page);
     // Initialize elements.
-    this.cartItems = page.locator(".cart_item");
-    this.summarySubtotal = page.locator(".summary_subtotal_label");
-    this.summaryTax = page.locator(".summary_tax_label");
-    this.summaryTotal = page.locator(".summary_total_label");
-    this.finishButton = page.locator("#finish");
-    this.cancelButton = page.locator("#cancel");
+    // this.cartItems = page.locator(".cart_item");
+    this.cartItems = page.getByTestId("inventory-item");
+    this.summarySubtotal = page.getByText("Item total: $");
+    this.summaryTax = page.getByText("Tax: $");
+    this.summaryTotal = page.getByTestId("total-label");
+    this.finishButton = page.getByRole("button", { name: "Finish"})
+    this.cancelButton = page.getByRole("button", { name: "Cancel" });
   }
 
   /**
