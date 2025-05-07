@@ -23,25 +23,10 @@ export class CartPage extends BasePage {
       name: "Checkout",
     });
     this.cartList = page.getByTestId("cart-list");
-    this.cartItems = page.getByRole("link");
-    // console.log(`reflect: `, Reflect.ownKeys(this.cartItems));
-    // console.log(`count: `, this.cartItems.count());
-  }
-  
-  /**
-   * testing elements.
-   **/
-  async testingElements(): Promise<void> {
-    console.log('cartItems: ', await this.cartItems);
-    console.log('reflect: ', await Reflect.ownKeys(this.cartItems));
-    console.log('count: ', await this.cartItems.count());
+    this.cartItems = page.getByTestId("inventory-item");
   }
 
-
   /**
-   * 
-   * 
-   * 
    * Navigate to cart page directly.`
    */
   async goto(): Promise<void> {
@@ -78,7 +63,6 @@ export class CartPage extends BasePage {
    * @param itemName Name of the item to remove.
    */
   async removeItem(itemName: string): Promise<void> {
-
     const item = this.cartItems.filter({
       has: this.page.locator(".inventory_item_name", {
         hasText: itemName,
@@ -106,4 +90,3 @@ export class CartPage extends BasePage {
     );
   }
 }
-

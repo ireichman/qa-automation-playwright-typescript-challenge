@@ -12,10 +12,10 @@ export class InventoryPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.productSortContainer = page.locator(".product_sort_container");
-    this.inventoryList = page.locator(".inventory_list");
-    this.inventoryItems = page.locator(".inventory_item");
-    this.shoppingCartBadgeCount = page.locator(".shopping_cart_badge");
+    this.productSortContainer = page.getByTestId("product-sort-container");
+    this.inventoryList = page.getByTestId("inventory-list");
+    this.inventoryItems = page.getByTestId("inventory-item");
+    this.shoppingCartBadgeCount = page.getByTestId("shopping-cart-badge"); 
   }
 
   /**
@@ -122,22 +122,21 @@ export class InventoryPage extends BasePage {
    * @param productName Name of the product to open.
    */
   async openProductDetails(productName: string): Promise<void> {
-      await this.page.getByRole("link", { name: productName }).click();
+    await this.page.getByRole("link", { name: productName }).click();
   }
-    /**
-     * Get the shopping cart badge count.
-     * @returns Number of items in the shopping cart.
-     */
+  /**
+   * Get the shopping cart badge count.
+   * @returns Number of items in the shopping cart.
+   */
 
-    async getShoppingCartBadgeCount(): Promise<number> {
-        // Check if the cart badge is visible
-        // const cartBadge = this.page.locator(".shopping_cart_badge");
-        if (!(await this.shoppingCartBadge.isVisible())) {
-            return 0; // Return 0 if the badge is not visible
-        } else {
-            const badgeText = await this.shoppingCartBadge.textContent();
-            return parseInt(badgeText || "0", 10);
-        }
+  async getShoppingCartBadgeCount(): Promise<number> {
+    // Check if the cart badge is visible
+    // const cartBadge = this.page.locator(".shopping_cart_badge");
+    if (!(await this.shoppingCartBadge.isVisible())) {
+      return 0; // Return 0 if the badge is not visible
+    } else {
+      const badgeText = await this.shoppingCartBadge.textContent();
+      return parseInt(badgeText || "0", 10);
     }
-    
+  }
 };
