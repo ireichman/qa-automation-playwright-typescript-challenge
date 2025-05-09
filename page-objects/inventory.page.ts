@@ -68,21 +68,15 @@ export class InventoryPage extends BasePage {
    * @param productName Name of the product to add.
    */
   async addProductToCart(productName: string): Promise<void> {
-    // const productItem = this.page.locator(".inventory_item").filter({
-    //   has: this.page.locator(".inventory_item_name", {
-    //     hasText: productName,
-    //   }),
-    // });
-    // const productItem = this.inventoryItems.filter({
-    //   hasText: productName,
-    // });
-    // await productItem
-    //   .locator("button")
-    //   .filter({
-    //     hasText: "Add to cart",
-    //   })
-    //   .click();
-    this.page.getByRole("link", { name: productName });
+    // Finding the inventory item container for the product.
+    const productContainer = this.inventoryItems.filter({
+      hasText: productName,
+    });
+    // finding the 'add to cart' button for the product.
+    const addToCartButton = await productContainer.getByRole("button", {
+      name: "Add to cart",
+    });
+    await addToCartButton.click();
   }
 
   /**
@@ -90,18 +84,13 @@ export class InventoryPage extends BasePage {
    * @param productName Name of the product to remove.
    */
   async removeProductFromCart(productName: string): Promise<void> {
-    const productItem = this.page.locator(".inventory_item").filter({
-      has: this.page.locator(".inventory_item_name", {
-        hasText: productName,
-      }),
+    const productContainer = await this.inventoryItems.filter({
+      hasText: productName
     });
-
-    await productItem
-      .locator("button")
-      .filter({
-        hasText: "Remove",
-      })
-      .click();
+    const removeButton = await productContainer.getByRole('button', 
+      { name: 'Remove' }
+    );
+    await removeButton.click();
   }
 
   /**
