@@ -84,12 +84,13 @@ export class InventoryPage extends BasePage {
    * @param productName Name of the product to remove.
    */
   async removeProductFromCart(productName: string): Promise<void> {
+    // Finding the inventory item container for the product.
     const productContainer = await this.inventoryItems.filter({
-      hasText: productName
+      hasText: productName,
     });
-    const removeButton = await productContainer.getByRole('button', 
-      { name: 'Remove' }
-    );
+    const removeButton = await productContainer.getByRole("button", {
+      name: "Remove",
+    });
     await removeButton.click();
   }
 
@@ -99,13 +100,12 @@ export class InventoryPage extends BasePage {
    * @returns True if product is in cart.
    */
   async isProductInCart(productName: string): Promise<boolean> {
-    const productItem = this.page.locator(".inventory_item").filter({
-      has: this.page.locator(".inventory_item_name", {
-        hasText: productName,
-      }),
+    // Finding the inventory item container for the product.
+    const productContainer = await this.inventoryItems.filter({
+      hasText: productName,
     });
 
-    const buttonText = await productItem.locator("button").textContent();
+    const buttonText = await productContainer.getByRole("button").textContent();
     return buttonText?.includes("Remove") || false;
   }
 
@@ -120,7 +120,6 @@ export class InventoryPage extends BasePage {
    * Get the shopping cart badge count.
    * @returns Number of items in the shopping cart.
    */
-
   async getShoppingCartBadgeCount(): Promise<number> {
     // Check if the cart badge is visible
     // const cartBadge = this.page.locator(".shopping_cart_badge");
