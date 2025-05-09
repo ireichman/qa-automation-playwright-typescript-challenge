@@ -9,13 +9,15 @@ export class InventoryPage extends BasePage {
   readonly inventoryList: Locator;
   readonly inventoryItems: Locator;
   readonly shoppingCartBadgeCount: Locator;
+  readonly inventoryItemsTitles: Locator;
 
   constructor(page: Page) {
     super(page);
     this.productSortContainer = page.getByTestId("product-sort-container");
     this.inventoryList = page.getByTestId("inventory-list");
     this.inventoryItems = page.getByTestId("inventory-item");
-    this.shoppingCartBadgeCount = page.getByTestId("shopping-cart-badge"); 
+    this.shoppingCartBadgeCount = page.getByTestId("shopping-cart-badge");
+    this.inventoryItemsTitles = page.getByTestId("inventory-item-name");
   }
 
   /**
@@ -46,10 +48,9 @@ export class InventoryPage extends BasePage {
    * @returns Array of product titles.
    */
   async getProductTitles(): Promise<string[]> {
-    const titles = await this.page
-      .locator(".inventory_item_name")
-      .allTextContents();
-    return titles;
+    const productTitles = this.inventoryItemsTitles
+      
+    return productTitles.allTextContents();
   }
 
   /**
