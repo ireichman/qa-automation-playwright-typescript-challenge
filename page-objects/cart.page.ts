@@ -59,17 +59,18 @@ export class CartPage extends BasePage {
   }
 
   /**
-   * Remove item from cart by name.
-   * @param itemName Name of the item to remove.
+   * Remove a product from cart by name.
+   * @param productName Name of the product to remove.
    */
-  async removeItem(itemName: string): Promise<void> {
-    const item = this.cartItems.filter({
-      has: this.page.locator(".inventory_item_name", {
-        hasText: itemName,
-      }),
+  async removeProductFromCart(productName: string): Promise<void> {
+    // Finding the inventory item container for the product.
+    const productContainer = await this.cartItems.filter({
+      hasText: productName,
     });
-
-    await item.locator(".cart_button").click();
+    const removeButton = await productContainer.getByRole("button", {
+      name: "Remove",
+    });
+    await removeButton.click();
   }
 
   /**

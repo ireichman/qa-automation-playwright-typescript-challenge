@@ -67,7 +67,7 @@ test.describe("cart functionality @cart", () => {
       expect(await cartPage.getItemCount()).toBe(1);
 
       // Remove the item from the cart.
-      await cartPage.removeItem("Sauce Labs Bolt T-Shirt");
+      await cartPage.removeProductFromCart("Sauce Labs Bolt T-Shirt");
 
       // Verify that the item is removed from the cart.
       expect(await cartPage.getItemCount()).toBe(0);

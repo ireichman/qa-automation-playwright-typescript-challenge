@@ -2,7 +2,6 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 import { UI_BASE_URL } from "../fixtures/test.fixtures";
 
-
 export class InventoryPage extends BasePage {
   // Inventory page elements
   readonly productSortContainer: Locator;
@@ -130,4 +129,4 @@ export class InventoryPage extends BasePage {
       return parseInt(badgeText || "0", 10);
     }
   }
-};
+}
