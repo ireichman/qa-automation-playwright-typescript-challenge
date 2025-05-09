@@ -48,14 +48,13 @@ export class InventoryPage extends BasePage {
    * @returns Array of product titles.
    */
   async getProductTitles(): Promise<string[]> {
-    const productTitles = this.inventoryItemsTitles
-      
+    const productTitles = this.inventoryItemsTitles;
     return productTitles.allTextContents();
   }
 
   /**
    * Retrieve product prices.
-   * @returns Array of product prices as numbers only without $.
+   * @returns Array of product prices as numbers only, without $.
    */
   async getProductPrices(): Promise<number[]> {
     const priceStrings = await this.page
@@ -69,18 +68,21 @@ export class InventoryPage extends BasePage {
    * @param productName Name of the product to add.
    */
   async addProductToCart(productName: string): Promise<void> {
-    const productItem = this.page.locator(".inventory_item").filter({
-      has: this.page.locator(".inventory_item_name", {
-        hasText: productName,
-      }),
-    });
-
-    await productItem
-      .locator("button")
-      .filter({
-        hasText: "Add to cart",
-      })
-      .click();
+    // const productItem = this.page.locator(".inventory_item").filter({
+    //   has: this.page.locator(".inventory_item_name", {
+    //     hasText: productName,
+    //   }),
+    // });
+    // const productItem = this.inventoryItems.filter({
+    //   hasText: productName,
+    // });
+    // await productItem
+    //   .locator("button")
+    //   .filter({
+    //     hasText: "Add to cart",
+    //   })
+    //   .click();
+    this.page.getByRole("link", { name: productName });
   }
 
   /**
